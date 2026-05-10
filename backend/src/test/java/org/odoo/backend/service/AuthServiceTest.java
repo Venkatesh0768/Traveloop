@@ -73,11 +73,24 @@ public class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
+
         userRole = new Role();
         userRole.setName(RoleType.ROLE_USER);
 
-        validSignupRequest = new SignupRequest("test@gmail.com", "SecurePass123!", "John", "Doe");
-        validLoginRequest = new LoginRequest("test@gmail.com", "SecurePass123!");
+        validSignupRequest = new SignupRequest(
+                "test@gmail.com",
+                "SecurePass123!",
+                "John",
+                "Doe",
+                "9876543210",
+                "Mumbai",
+                "India"
+        );
+
+        validLoginRequest = new LoginRequest(
+                "test@gmail.com",
+                "SecurePass123!"
+        );
 
         testUser = User.builder()
                 .id(UUID.randomUUID())
@@ -85,6 +98,9 @@ public class AuthServiceTest {
                 .password("encoded_password")
                 .firstName("John")
                 .lastName("Doe")
+                .phoneNumber("9876543210")
+                .city("Mumbai")
+                .country("India")
                 .emailVerified(true)
                 .enabled(true)
                 .provider("local")
