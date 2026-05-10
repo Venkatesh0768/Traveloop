@@ -2,6 +2,8 @@
 
 A production-ready travel planning application built with **Spring Boot 4** and **Next.js 16**. Plan trips, track budgets, manage itineraries, share journeys, and discover trending destinations — all in one place.
 
+![Project Screenshot](frontend/public/image.png)
+
 ---
 
 ## Table of Contents

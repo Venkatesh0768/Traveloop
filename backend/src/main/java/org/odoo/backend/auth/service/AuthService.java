@@ -28,25 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Core authentication service.
- *
- * <h3>Responsibilities</h3>
- * <ul>
- *   <li>Signup with OTP email verification</li>
- *   <li>Login with brute-force lockout</li>
- *   <li>Password reset / change</li>
- *   <li>Profile management</li>
- * </ul>
- *
- * <h3>What this service does NOT do</h3>
- * <ul>
- *   <li><b>Refresh token CRUD</b> → delegated to {@link RefreshTokenService}</li>
- *   <li><b>OTP generation/validation</b> → delegated to {@link OTPService}</li>
- *   <li><b>Cookie building</b> → delegated to
- *       {@code org.blog.backend.auth.security.CookieService} (called from controller)</li>
- * </ul>
- */
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
