@@ -18,7 +18,11 @@ function LoginForm() {
 
   const [form, setForm]       = useState({ email: "", password: "" });
   const [errors, setErrors]   = useState<{ email?: string; password?: string }>({});
-  const [apiError, setApiError] = useState<string | null>(null);
+  const [apiError, setApiError] = useState<string | null>(
+    searchParams.get("error") === "oauth_failed"
+      ? "Google sign-in failed. Please try again or use email and password."
+      : null
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

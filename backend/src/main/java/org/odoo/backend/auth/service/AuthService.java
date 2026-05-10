@@ -80,6 +80,10 @@ public class AuthService {
             throw new EmailAlreadyExistsException("Email already registered");
         }
 
+        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new EmailAlreadyExistsException("Phone number already registered");
+        }
+
         Role userRole = roleRepository.findByName(RoleType.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Default role ROLE_USER not found — did DataInitializer run?"));
 

@@ -1,32 +1,131 @@
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Schema migrations — run on every startup via sql.init.mode=always
+-- ddl-auto:update never alters existing column constraints, so we do it here.
+-- MODIFY COLUMN is idempotent — safe to run on every restart.
+-- ─────────────────────────────────────────────────────────────────────────────
+ALTER TABLE users MODIFY COLUMN city         VARCHAR(255) NULL;
+ALTER TABLE users MODIFY COLUMN country      VARCHAR(255) NULL;
+ALTER TABLE users MODIFY COLUMN phone_number VARCHAR(255) NULL;
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Seed cities — only insert if the city name doesn't already exist
+-- ─────────────────────────────────────────────────────────────────────────────
 INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
-VALUES
-    (UUID_TO_BIN(UUID()), 'Paris', 'France', 'Europe', 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800', 'The City of Light, famous for the Eiffel Tower, world-class cuisine, and art museums.', 9, 98, true, 'Euro', 'French', NOW()),
-    (UUID_TO_BIN(UUID()), 'Tokyo', 'Japan', 'Asia', 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800', 'A dazzling blend of ultramodern and traditional, from neon-lit skyscrapers to historic temples.', 8, 97, true, 'Japanese Yen', 'Japanese', NOW()),
-    (UUID_TO_BIN(UUID()), 'Bangkok', 'Thailand', 'Asia', 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800', 'A vibrant city with ornate temples, street food, and legendary nightlife.', 4, 92, true, 'Thai Baht', 'Thai', NOW()),
-    (UUID_TO_BIN(UUID()), 'New York', 'United States', 'North America', 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800', 'The city that never sleeps — iconic skyline, Broadway, and endless culture.', 10, 99, true, 'US Dollar', 'English', NOW()),
-    (UUID_TO_BIN(UUID()), 'Rome', 'Italy', 'Europe', 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800', 'The Eternal City, home to the Colosseum, Vatican, and extraordinary Roman cuisine.', 7, 95, true, 'Euro', 'Italian', NOW()),
-    (UUID_TO_BIN(UUID()), 'Barcelona', 'Spain', 'Europe', 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800', 'Gaudí architecture, golden beaches, tapas culture, and a buzzing nightlife scene.', 7, 93, true, 'Euro', 'Spanish', NOW()),
-    (UUID_TO_BIN(UUID()), 'Dubai', 'United Arab Emirates', 'Middle East', 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800', 'Futuristic skyline, luxury shopping, desert safaris, and year-round sunshine.', 9, 94, true, 'UAE Dirham', 'Arabic', NOW()),
-    (UUID_TO_BIN(UUID()), 'Bali', 'Indonesia', 'Asia', 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800', 'Tropical paradise with terraced rice fields, Hindu temples, surf beaches, and rich culture.', 3, 96, true, 'Indonesian Rupiah', 'Balinese', NOW()),
-    (UUID_TO_BIN(UUID()), 'London', 'United Kingdom', 'Europe', 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800', 'Historic capital with royal palaces, world-class museums, and iconic red double-deckers.', 10, 97, false, 'British Pound', 'English', NOW()),
-    (UUID_TO_BIN(UUID()), 'Istanbul', 'Turkey', 'Europe/Asia', 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800', 'Where East meets West — stunning mosques, bazaars, and Bosphorus views.', 5, 91, true, 'Turkish Lira', 'Turkish', NOW()),
-    (UUID_TO_BIN(UUID()), 'Singapore', 'Singapore', 'Asia', 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800', 'Ultra-modern city-state with stunning gardens, hawker food culture, and spotless streets.', 9, 92, false, 'Singapore Dollar', 'English', NOW()),
-    (UUID_TO_BIN(UUID()), 'Amsterdam', 'Netherlands', 'Europe', 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800', 'Canal rings, cycling culture, world-class museums, and a laid-back European vibe.', 8, 89, false, 'Euro', 'Dutch', NOW()),
-    (UUID_TO_BIN(UUID()), 'Prague', 'Czech Republic', 'Europe', 'https://images.unsplash.com/photo-1541849546-216549ae216d?w=800', 'Fairy-tale medieval old town, Gothic architecture, and affordable Central European charm.', 5, 88, true, 'Czech Koruna', 'Czech', NOW()),
-    (UUID_TO_BIN(UUID()), 'Sydney', 'Australia', 'Oceania', 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800', 'Iconic Opera House, Harbour Bridge, Bondi Beach, and a laid-back coastal lifestyle.', 9, 91, false, 'Australian Dollar', 'English', NOW()),
-    (UUID_TO_BIN(UUID()), 'Lisbon', 'Portugal', 'Europe', 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800', 'Sun-soaked hilltop city with historic trams, Fado music, and some of Europe\'s best seafood.', 6, 90, true, 'Euro', 'Portuguese', NOW()),
-    (UUID_TO_BIN(UUID()), 'Mexico City', 'Mexico', 'North America', 'https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=800', 'Megacity rich in Aztec history, street tacos, vibrant murals, and world-class museums.', 4, 87, true, 'Mexican Peso', 'Spanish', NOW()),
-    (UUID_TO_BIN(UUID()), 'Cape Town', 'South Africa', 'Africa', 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800', 'Dramatic Table Mountain backdrop, white-sand beaches, vineyards, and rich cultural heritage.', 5, 89, true, 'South African Rand', 'Afrikaans', NOW()),
-    (UUID_TO_BIN(UUID()), 'Kyoto', 'Japan', 'Asia', 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800', 'Ancient imperial capital with thousands of shrines, geisha districts, and bamboo groves.', 7, 93, true, 'Japanese Yen', 'Japanese', NOW()),
-    (UUID_TO_BIN(UUID()), 'Vienna', 'Austria', 'Europe', 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800', 'Imperial palaces, classical music heritage, grand coffeehouses, and stunning Baroque art.', 8, 87, false, 'Euro', 'German', NOW()),
-    (UUID_TO_BIN(UUID()), 'Marrakech', 'Morocco', 'Africa', 'https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?w=800', 'Labyrinthine souks, riads, spice markets, and the famous Djemaa el-Fna square.', 3, 88, true, 'Moroccan Dirham', 'Arabic', NOW()),
-    (UUID_TO_BIN(UUID()), 'Buenos Aires', 'Argentina', 'South America', 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800', 'The Paris of South America — tango, steak, colourful La Boca, and European architecture.', 4, 86, false, 'Argentine Peso', 'Spanish', NOW()),
-    (UUID_TO_BIN(UUID()), 'Seoul', 'South Korea', 'Asia', 'https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800', 'K-pop culture, ancient palaces, street food markets, and cutting-edge technology.', 6, 92, true, 'South Korean Won', 'Korean', NOW()),
-    (UUID_TO_BIN(UUID()), 'Santorini', 'Greece', 'Europe', 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800', 'Iconic blue-domed churches, dramatic caldera views, sunsets, and Aegean island magic.', 9, 94, true, 'Euro', 'Greek', NOW()),
-    (UUID_TO_BIN(UUID()), 'Hanoi', 'Vietnam', 'Asia', 'https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=800', 'French colonial architecture, pho-filled street alleys, and gateway to Halong Bay.', 2, 85, true, 'Vietnamese Dong', 'Vietnamese', NOW()),
-    (UUID_TO_BIN(UUID()), 'Nairobi', 'Kenya', 'Africa', 'https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=800', 'Safari gateway to the Maasai Mara, vibrant tech scene, and East Africa\'s cultural hub.', 4, 82, false, 'Kenyan Shilling', 'Swahili', NOW()),
-    (UUID_TO_BIN(UUID()), 'Rio de Janeiro', 'Brazil', 'South America', 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800', 'Christ the Redeemer, Carnival, Copacabana beach, and samba rhythms under the sun.', 5, 90, true, 'Brazilian Real', 'Portuguese', NOW()),
-    (UUID_TO_BIN(UUID()), 'Reykjavik', 'Iceland', 'Europe', 'https://images.unsplash.com/photo-1504829857797-ddff29c27927?w=800', 'Northern lights, geothermal pools, midnight sun, and dramatic volcanic landscapes.', 10, 88, true, 'Icelandic Króna', 'Icelandic', NOW()),
-    (UUID_TO_BIN(UUID()), 'Mumbai', 'India', 'Asia', 'https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=800', 'Bollywood, colonial architecture, street food chaos, and the energy of India\'s financial capital.', 3, 86, false, 'Indian Rupee', 'Hindi', NOW()),
-    (UUID_TO_BIN(UUID()), 'Petra', 'Jordan', 'Middle East', 'https://images.unsplash.com/photo-1548786811-dd6e453ccca7?w=800', 'The Rose City carved into rock — one of the world\'s most breathtaking ancient wonders.', 5, 84, true, 'Jordanian Dinar', 'Arabic', NOW()),
-    (UUID_TO_BIN(UUID()), 'Vancouver', 'Canada', 'North America', 'https://images.unsplash.com/photo-1559511260-66a654ae982a?w=800', 'Mountains meet ocean — stunning nature, multicultural food scene, and outdoor adventures.', 8, 87, false, 'Canadian Dollar', 'English', NOW());
+SELECT UUID_TO_BIN(UUID()), 'Paris', 'France', 'Europe', 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800', 'The City of Light, famous for the Eiffel Tower, world-class cuisine, and art museums.', 9, 98, true, 'Euro', 'French', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Paris');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Tokyo', 'Japan', 'Asia', 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800', 'A dazzling blend of ultramodern and traditional, from neon-lit skyscrapers to historic temples.', 8, 97, true, 'Japanese Yen', 'Japanese', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Tokyo');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Bangkok', 'Thailand', 'Asia', 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800', 'A vibrant city with ornate temples, street food, and legendary nightlife.', 4, 92, true, 'Thai Baht', 'Thai', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Bangkok');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'New York', 'United States', 'North America', 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800', 'The city that never sleeps — iconic skyline, Broadway, and endless culture.', 10, 99, true, 'US Dollar', 'English', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'New York');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Rome', 'Italy', 'Europe', 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800', 'The Eternal City, home to the Colosseum, Vatican, and extraordinary Roman cuisine.', 7, 95, true, 'Euro', 'Italian', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Rome');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Barcelona', 'Spain', 'Europe', 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800', 'Gaudi architecture, golden beaches, tapas culture, and a buzzing nightlife scene.', 7, 93, true, 'Euro', 'Spanish', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Barcelona');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Dubai', 'United Arab Emirates', 'Middle East', 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800', 'Futuristic skyline, luxury shopping, desert safaris, and year-round sunshine.', 9, 94, true, 'UAE Dirham', 'Arabic', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Dubai');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Bali', 'Indonesia', 'Asia', 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800', 'Tropical paradise with terraced rice fields, Hindu temples, surf beaches, and rich culture.', 3, 96, true, 'Indonesian Rupiah', 'Balinese', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Bali');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'London', 'United Kingdom', 'Europe', 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800', 'Historic capital with royal palaces, world-class museums, and iconic red double-deckers.', 10, 97, false, 'British Pound', 'English', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'London');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Istanbul', 'Turkey', 'Europe/Asia', 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800', 'Where East meets West — stunning mosques, bazaars, and Bosphorus views.', 5, 91, true, 'Turkish Lira', 'Turkish', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Istanbul');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Singapore', 'Singapore', 'Asia', 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800', 'Ultra-modern city-state with stunning gardens, hawker food culture, and spotless streets.', 9, 92, false, 'Singapore Dollar', 'English', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Singapore');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Amsterdam', 'Netherlands', 'Europe', 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800', 'Canal rings, cycling culture, world-class museums, and a laid-back European vibe.', 8, 89, false, 'Euro', 'Dutch', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Amsterdam');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Prague', 'Czech Republic', 'Europe', 'https://images.unsplash.com/photo-1541849546-216549ae216d?w=800', 'Fairy-tale medieval old town, Gothic architecture, and affordable Central European charm.', 5, 88, true, 'Czech Koruna', 'Czech', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Prague');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Sydney', 'Australia', 'Oceania', 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800', 'Iconic Opera House, Harbour Bridge, Bondi Beach, and a laid-back coastal lifestyle.', 9, 91, false, 'Australian Dollar', 'English', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Sydney');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Lisbon', 'Portugal', 'Europe', 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800', 'Sun-soaked hilltop city with historic trams, Fado music, and some of Europe best seafood.', 6, 90, true, 'Euro', 'Portuguese', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Lisbon');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Mexico City', 'Mexico', 'North America', 'https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=800', 'Megacity rich in Aztec history, street tacos, vibrant murals, and world-class museums.', 4, 87, true, 'Mexican Peso', 'Spanish', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Mexico City');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Cape Town', 'South Africa', 'Africa', 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800', 'Dramatic Table Mountain backdrop, white-sand beaches, vineyards, and rich cultural heritage.', 5, 89, true, 'South African Rand', 'Afrikaans', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Cape Town');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Kyoto', 'Japan', 'Asia', 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800', 'Ancient imperial capital with thousands of shrines, geisha districts, and bamboo groves.', 7, 93, true, 'Japanese Yen', 'Japanese', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Kyoto');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Vienna', 'Austria', 'Europe', 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800', 'Imperial palaces, classical music heritage, grand coffeehouses, and stunning Baroque art.', 8, 87, false, 'Euro', 'German', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Vienna');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Marrakech', 'Morocco', 'Africa', 'https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?w=800', 'Labyrinthine souks, riads, spice markets, and the famous Djemaa el-Fna square.', 3, 88, true, 'Moroccan Dirham', 'Arabic', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Marrakech');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Buenos Aires', 'Argentina', 'South America', 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800', 'The Paris of South America — tango, steak, colourful La Boca, and European architecture.', 4, 86, false, 'Argentine Peso', 'Spanish', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Buenos Aires');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Seoul', 'South Korea', 'Asia', 'https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800', 'K-pop culture, ancient palaces, street food markets, and cutting-edge technology.', 6, 92, true, 'South Korean Won', 'Korean', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Seoul');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Santorini', 'Greece', 'Europe', 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800', 'Iconic blue-domed churches, dramatic caldera views, sunsets, and Aegean island magic.', 9, 94, true, 'Euro', 'Greek', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Santorini');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Hanoi', 'Vietnam', 'Asia', 'https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=800', 'French colonial architecture, pho-filled street alleys, and gateway to Halong Bay.', 2, 85, true, 'Vietnamese Dong', 'Vietnamese', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Hanoi');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Nairobi', 'Kenya', 'Africa', 'https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=800', 'Safari gateway to the Maasai Mara, vibrant tech scene, and East Africa cultural hub.', 4, 82, false, 'Kenyan Shilling', 'Swahili', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Nairobi');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Rio de Janeiro', 'Brazil', 'South America', 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800', 'Christ the Redeemer, Carnival, Copacabana beach, and samba rhythms under the sun.', 5, 90, true, 'Brazilian Real', 'Portuguese', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Rio de Janeiro');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Reykjavik', 'Iceland', 'Europe', 'https://images.unsplash.com/photo-1504829857797-ddff29c27927?w=800', 'Northern lights, geothermal pools, midnight sun, and dramatic volcanic landscapes.', 10, 88, true, 'Icelandic Krona', 'Icelandic', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Reykjavik');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Mumbai', 'India', 'Asia', 'https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=800', 'Bollywood, colonial architecture, street food chaos, and the energy of India financial capital.', 3, 86, false, 'Indian Rupee', 'Hindi', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Mumbai');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Petra', 'Jordan', 'Middle East', 'https://images.unsplash.com/photo-1548786811-dd6e453ccca7?w=800', 'The Rose City carved into rock — one of the world most breathtaking ancient wonders.', 5, 84, true, 'Jordanian Dinar', 'Arabic', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Petra');
+
+INSERT INTO cities (id, name, country, region, image_url, description, cost_index, popularity_score, trending, currency, language, created_at)
+SELECT UUID_TO_BIN(UUID()), 'Vancouver', 'Canada', 'North America', 'https://images.unsplash.com/photo-1559511260-66a654ae982a?w=800', 'Mountains meet ocean — stunning nature, multicultural food scene, and outdoor adventures.', 8, 87, false, 'Canadian Dollar', 'English', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE name = 'Vancouver');

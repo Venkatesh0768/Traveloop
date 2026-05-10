@@ -20,6 +20,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -32,7 +33,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity   // Enables @PreAuthorize / @PostAuthorize on methods
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -56,27 +57,45 @@ public class SecurityConfig {
             "/auth/refresh-token",
             "/auth/forgot-password",
             "/auth/reset-password",
-            // OAuth2
+            // OAuth2 — MUST be public so Spring can process the callback
             "/oauth2/**",
             "/login/oauth2/**",
+            "/login/**",
+            // Error endpoint — must be public so OAuth2 failures don't loop into 401
+            "/error",
             // API documentation
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             // Health check
             "/actuator/health",
-
-            "/public/**",
+            // Public trip browsing (no auth required)
+            "/trips/public/**",
+            "/shared/**",
+            "/cities/**",
             "/comments/post/**"
     };
+
+    @Bean
+    public HttpSessionOAuth2AuthorizationRequestRepository authorizationRequestRepository() {
+        return new HttpSessionOAuth2AuthorizationRequestRepository();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                /*
+                 * Session policy:
+                 * - API requests use stateless JWT (no session needed).
+                 * - OAuth2 login REQUIRES a session to store the state/nonce
+                 *   between the authorization redirect and the callback.
+                 *   IF_REQUIRED lets Spring create a session only when OAuth2
+                 *   needs one, while all other requests remain stateless.
+                 */
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .exceptionHandling(ex ->
                         ex.authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
@@ -84,11 +103,11 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                // ── JWT filter ────────────────────────────────────────────────
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                // ── OAuth2 social login ───────────────────────────────────────
                 .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(endpoint -> endpoint
+                                .authorizationRequestRepository(authorizationRequestRepository()))
                         .userInfoEndpoint(info -> info.userService(customOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
                         .failureHandler(oAuth2FailureHandler)
@@ -113,7 +132,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

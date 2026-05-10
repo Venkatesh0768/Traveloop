@@ -29,9 +29,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        OAuth2User oAuth2User;
+        try {
+            oAuth2User = super.loadUser(userRequest);
+        } catch (Exception ex) {
+            log.error("Failed to load OAuth2 user from provider: {}", ex.getMessage(), ex);
+            throw new OAuth2AuthenticationException("Failed to fetch user info from provider: " + ex.getMessage());
+        }
 
-        String provider = userRequest.getClientRegistration().getRegistrationId(); // "google" | "github"
+        String provider = userRequest.getClientRegistration().getRegistrationId();
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
         String email      = extractEmail(provider, attributes);
@@ -44,11 +50,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("Email not returned by " + provider + " provider");
         }
 
-        User user = userRepository.findByEmail(email)
-                .map(existing -> updateExistingUser(existing, provider, providerId, imageUrl))
-                .orElseGet(() -> createNewUser(email, firstName, lastName, provider, providerId, imageUrl));
+        try {
+            User user = userRepository.findByEmail(email)
+                    .map(existing -> updateExistingUser(existing, provider, providerId, imageUrl))
+                    .orElseGet(() -> createNewUser(email, firstName, lastName, provider, providerId, imageUrl));
 
-        return new OAuth2UserPrincipal(user, attributes);
+            return new OAuth2UserPrincipal(user, attributes);
+        } catch (OAuth2AuthenticationException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            log.error("Error processing OAuth2 user email={}: {}", email, ex.getMessage(), ex);
+            throw new OAuth2AuthenticationException("Failed to process OAuth2 login: " + ex.getMessage());
+        }
     }
 
     // ─── Private helpers ─────────────────────────────────────────────────────
@@ -70,6 +83,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .password(null)          // No local password for social users
                 .firstName(firstName != null ? firstName : "")
                 .lastName(lastName != null ? lastName : "")
+                .phoneNumber(null)       // Not available from OAuth2 providers
+                .city(null)             // Not available from OAuth2 providers
+                .country(null)          // Not available from OAuth2 providers
                 .emailVerified(true)     // Trusted — email already verified by provider
                 .enabled(true)
                 .provider(provider)

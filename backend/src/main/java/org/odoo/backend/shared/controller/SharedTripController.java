@@ -1,6 +1,7 @@
 package org.odoo.backend.shared.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.odoo.backend.shared.dto.response.FullPublicTripResponse;
 import org.odoo.backend.shared.dto.response.PublicTripResponse;
 import org.odoo.backend.shared.dto.response.SharedTripResponse;
 import org.odoo.backend.shared.service.SharedTripService;
@@ -19,25 +20,30 @@ public class SharedTripController {
     public SharedTripResponse generateShareLink(
             @PathVariable UUID tripId
     ) {
-
         return sharedTripService.generateShareLink(tripId);
     }
 
+    /** Basic public view (no auth required) */
     @GetMapping("/{shareToken}")
     public PublicTripResponse getPublicTrip(
             @PathVariable String shareToken
     ) {
-
         return sharedTripService.getPublicTrip(shareToken);
+    }
+
+    /** Full detail view — authenticated users see stops+activities, budget, checklist, notes */
+    @GetMapping("/{shareToken}/full")
+    public FullPublicTripResponse getFullPublicTrip(
+            @PathVariable String shareToken
+    ) {
+        return sharedTripService.getFullPublicTrip(shareToken);
     }
 
     @PostMapping("/{shareToken}/copy")
     public String copyTrip(
             @PathVariable String shareToken
     ) {
-
         sharedTripService.copyTrip(shareToken);
-
         return "Trip copied successfully";
     }
 }

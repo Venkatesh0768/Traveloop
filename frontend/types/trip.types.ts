@@ -199,7 +199,35 @@ export interface City {
   language?: string;
 }
 
-// ─── Shared Trip ──────────────────────────────────────────────────────────────
+// ─── Full Public Trip (authenticated detail view) ─────────────────────────────
+
+export interface StopWithActivities {
+  id: string;
+  cityName: string;
+  country: string;
+  arrivalDate: string;
+  departureDate: string;
+  orderIndex?: number;
+  notes?: string;
+  activities: Activity[];
+}
+
+export interface FullPublicTrip {
+  tripId: string;
+  title: string;
+  description?: string;
+  startDate: string;
+  endDate: string;
+  coverImage?: string;
+  createdBy: string;
+  shareToken?: string;
+  totalBudget?: number;
+  views?: number;
+  stops: StopWithActivities[];
+  expenses: Expense[];
+  checklistItems: ChecklistItem[];
+  notes: TripNote[];
+}
 
 export interface SharedTrip {
   id: string;
@@ -217,6 +245,7 @@ export interface PublicTrip {
   startDate: string;
   endDate: string;
   createdBy: string;
+  shareToken?: string;
   stops: TripStop[];
 }
 

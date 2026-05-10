@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import Link from "next/link";
 import {
   Search,
   Loader2,
@@ -11,6 +12,7 @@ import {
   Star,
   Globe,
   DollarSign,
+  ArrowRight,
 } from "lucide-react";
 import { citiesApi } from "@/lib/api/trips.api";
 import type { City } from "@/types/trip.types";
@@ -152,7 +154,9 @@ function CitiesContent() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayCities.map((city) => (
-            <CityCard key={city.id} city={city} />
+            <Link key={city.id} href={`/cities/${encodeURIComponent(city.name)}`}>
+              <CityCard city={city} />
+            </Link>
           ))}
         </div>
       )}
@@ -225,6 +229,11 @@ function CityCard({ city }: { city: City }) {
               <Star size={11} /> {city.popularityScore}
             </span>
           )}
+        </div>
+        <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+          <span className="text-xs text-indigo-600 font-medium group-hover:underline flex items-center gap-1">
+            View details <ArrowRight size={11} />
+          </span>
         </div>
       </div>
     </div>

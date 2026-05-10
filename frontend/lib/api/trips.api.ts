@@ -17,6 +17,7 @@ import type {
   City,
   SharedTrip,
   PublicTrip,
+  FullPublicTrip,
 } from "@/types/trip.types";
 import type { AxiosResponse } from "axios";
 
@@ -135,6 +136,20 @@ export const sharedApi = {
   getPublicTrip: (shareToken: string): Promise<AxiosResponse<PublicTrip>> =>
     apiClient.get(`/shared/${shareToken}`),
 
+  /** Full detail — requires auth, returns stops+activities, budget, checklist, notes */
+  getFullPublicTrip: (shareToken: string): Promise<AxiosResponse<FullPublicTrip>> =>
+    apiClient.get(`/shared/${shareToken}/full`),
+
   copyTrip: (shareToken: string): Promise<AxiosResponse<string>> =>
     apiClient.post(`/shared/${shareToken}/copy`),
+};
+
+// ─── Public Trips (no auth required) ─────────────────────────────────────────
+
+export const publicTripsApi = {
+  getAll: (): Promise<AxiosResponse<PublicTrip[]>> =>
+    apiClient.get("/trips/public"),
+
+  getByCity: (cityName: string): Promise<AxiosResponse<PublicTrip[]>> =>
+    apiClient.get(`/trips/public/city/${encodeURIComponent(cityName)}`),
 };

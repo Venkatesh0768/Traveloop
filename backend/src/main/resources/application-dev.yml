@@ -37,11 +37,7 @@ spring:
           max-wait: 1000ms
 
   flyway:
-    baseline-on-migrate: true
-    enabled: true
-    baseline-description: "Baseline Initial Version"
-    baseline-version: 0
-    locations: classpath:db/migration
+    enabled: false
 
   mail:
     host: smtp.gmail.com
@@ -119,6 +115,11 @@ app:
     domain: ""                 # empty = use request domain automatically
     max-age-seconds: 604800    # 7 days
     path: /
+
+  # ── OAuth2 authorization request repository ──────────────────────────────────
+  # The default HttpSessionOAuth2AuthorizationRequestRepository stores the
+  # state/nonce in the HTTP session.  With IF_REQUIRED session policy this
+  # works correctly for the OAuth2 flow while API requests remain stateless.
 
   # ── Scheduler configuration ──────────────────────────────────────────────────
   scheduler:

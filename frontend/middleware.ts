@@ -5,6 +5,11 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasRefreshToken = request.cookies.has("refreshToken");
 
+  // Public trip pages are accessible without auth
+  if (pathname.startsWith("/public/trips/")) {
+    return NextResponse.next();
+  }
+
   const isProtectedRoute =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/profile") ||
@@ -32,5 +37,6 @@ export const config = {
     "/cities/:path*",
     "/checklist/:path*",
     "/notes/:path*",
+    // /public/trips/* is intentionally NOT in the matcher — open to all
   ],
 };

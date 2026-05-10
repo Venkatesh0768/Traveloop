@@ -28,7 +28,10 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
             HttpServletResponse response,
             AuthenticationException exception) throws IOException {
 
-        log.warn("OAuth2 authentication failed: {}", exception.getMessage());
+        log.error("OAuth2 authentication failed: {} — cause: {}",
+                exception.getMessage(),
+                exception.getCause() != null ? exception.getCause().getMessage() : "none",
+                exception);
 
         String redirectUrl = UriComponentsBuilder
                 .fromUriString(frontendUrl + "/login")

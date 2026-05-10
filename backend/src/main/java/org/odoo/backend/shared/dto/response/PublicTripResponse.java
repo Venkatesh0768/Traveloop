@@ -26,5 +26,8 @@ public class PublicTripResponse {
 
     private String createdBy;
 
+    /** Share token — used to build the public URL on the frontend. */
+    private String shareToken;
+
     private List<TripStopResponse> stops;
 }

@@ -11,7 +11,13 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+        // phoneNumber unique only among non-null values — handled at app level
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,13 +41,13 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false , unique = true)
+    @Column(nullable = true)
     private String phoneNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String city;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String country;
 
     @Column(nullable = false)
