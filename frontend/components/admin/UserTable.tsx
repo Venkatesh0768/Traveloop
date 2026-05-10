@@ -33,7 +33,7 @@ export function UserTable({ users, onRefresh }: UserTableProps) {
   };
 
   const toggleStatus = (u: User) =>
-    withLoading(u.id, () => adminApi.setUserStatus(u.id, !u.enabled));
+    withLoading(u.id, async () => { await adminApi.setUserStatus(u.id, !u.enabled); });
 
   const startEdit = (u: User) => { setEditingId(u.id); setEditRoles([...u.roles]); };
   const cancelEdit = () => setEditingId(null);
@@ -48,7 +48,7 @@ export function UserTable({ users, onRefresh }: UserTableProps) {
 
   const deleteUser = (u: User) => {
     if (!confirm(`Delete ${u.email}? This cannot be undone.`)) return;
-    withLoading(u.id, () => adminApi.deleteUser(u.id));
+    withLoading(u.id, async () => { await adminApi.deleteUser(u.id); });
   };
 
   if (!users.length) {
