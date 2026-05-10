@@ -23,8 +23,10 @@ import org.odoo.backend.trip.repository.TripRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -206,12 +208,17 @@ public class SharedTripServiceImpl implements SharedTripService {
     }
 
     @Override
+    @Transactional
     public void copyTrip(String shareToken) {
 
         SharedTrip sharedTrip =
                 sharedTripRepository.findByShareToken(shareToken)
                         .orElseThrow(() ->
                                 new RuntimeException("Shared trip not found"));
+
+        if (!sharedTrip.getActive()) {
+            throw new RuntimeException("Shared trip is no longer active");
+        }
 
         Trip originalTrip = sharedTrip.getTrip();
 
@@ -224,6 +231,8 @@ public class SharedTripServiceImpl implements SharedTripService {
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
+        // Build the copied trip — explicitly initialise collections because
+        // Lombok @Builder does NOT call field initializers, leaving them null.
         Trip copiedTrip = Trip.builder()
                 .title(originalTrip.getTitle() + " (Copy)")
                 .description(originalTrip.getDescription())
@@ -234,10 +243,16 @@ public class SharedTripServiceImpl implements SharedTripService {
                 .totalBudget(originalTrip.getTotalBudget())
                 .estimatedCost(BigDecimal.ZERO)
                 .user(user)
+                .stops(new ArrayList<>())
+                .expenses(new ArrayList<>())
+                .checklistItems(new ArrayList<>())
+                .notes(new ArrayList<>())
                 .build();
 
+        // Persist the trip first so stops can reference its ID via FK
         Trip savedTrip = tripRepository.save(copiedTrip);
 
+        // Deep-copy each stop and its activities
         for (TripStop stop : originalTrip.getStops()) {
 
             TripStop copiedStop = TripStop.builder()
@@ -248,7 +263,25 @@ public class SharedTripServiceImpl implements SharedTripService {
                     .orderIndex(stop.getOrderIndex())
                     .notes(stop.getNotes())
                     .trip(savedTrip)
+                    .activities(new ArrayList<>())
                     .build();
+
+            // Copy activities for this stop
+            for (Activity activity : stop.getActivities()) {
+                Activity copiedActivity = Activity.builder()
+                        .title(activity.getTitle())
+                        .description(activity.getDescription())
+                        .category(activity.getCategory())
+                        .estimatedCost(activity.getEstimatedCost())
+                        .location(activity.getLocation())
+                        .startTime(activity.getStartTime())
+                        .endTime(activity.getEndTime())
+                        .durationMinutes(activity.getDurationMinutes())
+                        .tripStop(copiedStop)
+                        .build();
+
+                copiedStop.getActivities().add(copiedActivity);
+            }
 
             savedTrip.getStops().add(copiedStop);
         }

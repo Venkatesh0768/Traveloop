@@ -28,6 +28,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import org.springframework.http.HttpMethod;
 import java.util.List;
 
 
@@ -71,7 +72,6 @@ public class SecurityConfig {
             "/actuator/health",
             // Public trip browsing (no auth required)
             "/trips/public/**",
-            "/shared/**",
             "/cities/**",
             "/comments/post/**"
     };
@@ -100,6 +100,8 @@ public class SecurityConfig {
                         ex.authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        // Shared trip public views (GET only) — no auth required
+                        .requestMatchers(HttpMethod.GET, "/shared/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
