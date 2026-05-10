@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface ActivityRepository extends JpaRepository<Activity, UUID> {
     List<Activity> findByTripStop(TripStop tripStop);
-
+    long count();
 }

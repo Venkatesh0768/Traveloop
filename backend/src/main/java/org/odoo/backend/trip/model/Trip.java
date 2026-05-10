@@ -7,6 +7,7 @@ import org.odoo.backend.checklist.model.PackingChecklist;
 import org.odoo.backend.expense.model.Expense;
 import org.odoo.backend.itinerary.model.TripStop;
 import org.odoo.backend.notes.model.TripNote;
+import org.odoo.backend.shared.model.SharedTrip;
 import org.odoo.backend.trip.enums.TripStatus;
 import org.odoo.backend.trip.enums.Visibility;
 
@@ -87,6 +88,13 @@ public class Trip {
             orphanRemoval = true
     )
     private List<TripNote> notes = new ArrayList<>();
+
+    @OneToOne(
+            mappedBy = "trip",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private SharedTrip sharedTrip;
 
     /*
         MANY TRIPS -> ONE USER

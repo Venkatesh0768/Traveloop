@@ -1,0 +1,57 @@
+INSERT INTO cities (
+    id,
+    name,
+    country,
+    region,
+    image_url,
+    description,
+    cost_index,
+    popularity_score,
+    trending,
+    currency,
+    language,
+    created_at
+)
+VALUES
+    (
+        UUID_TO_BIN(UUID()),
+        'Paris',
+        'France',
+        'Europe',
+        'https://example.com/paris.jpg',
+        'City of Lights',
+        9,
+        98,
+        true,
+        'Euro',
+        'French',
+        NOW()
+    ),
+    (
+        UUID_TO_BIN(UUID()),
+        'Tokyo',
+        'Japan',
+        'Asia',
+        'https://example.com/tokyo.jpg',
+        'Modern tech city',
+        8,
+        95,
+        true,
+        'Yen',
+        'Japanese',
+        NOW()
+    ),
+    (
+        UUID_TO_BIN(UUID()),
+        'Bangkok',
+        'Thailand',
+        'Asia',
+        'https://example.com/bangkok.jpg',
+        'Budget travel paradise',
+        4,
+        90,
+        true,
+        'Baht',
+        'Thai',
+        NOW()
+    );
