@@ -13,12 +13,16 @@ spring:
       connection-timeout: 30000
 
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+  sql:
+    init:
+      mode: always
   data:
     redis:
       host: ${REDIS_HOST:localhost}

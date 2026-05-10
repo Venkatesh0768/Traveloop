@@ -66,11 +66,12 @@ export default function DashboardPage() {
             You have {trips.length} trip{trips.length !== 1 ? "s" : ""} planned.
             {ongoingTrips.length > 0 && ` ${ongoingTrips.length} ongoing right now.`}
           </p>
-          <Link href="/trips/new">
-            <Button className="bg-white text-indigo-700 hover:bg-indigo-50 border-0">
-              <Plus size={16} />
-              Plan a new trip
-            </Button>
+          <Link
+            href="/trips/new"
+            className="inline-flex items-center gap-2 bg-white text-indigo-700 font-semibold text-sm px-4 py-2.5 rounded-lg hover:bg-indigo-50 transition-colors"
+          >
+            <Plus size={16} />
+            Plan a new trip
           </Link>
         </div>
         {/* Decorative circles */}
