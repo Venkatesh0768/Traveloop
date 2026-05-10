@@ -2,10 +2,13 @@ package org.odoo.backend.itinerary.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.odoo.backend.activity.model.Activity;
 import org.odoo.backend.trip.model.Trip;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +35,13 @@ public class TripStop {
 
     @Column(nullable = false)
     private LocalDate departureDate;
+
+    @OneToMany(
+            mappedBy = "tripStop",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Activity> activities = new ArrayList<>();
 
     /*
         Used for ordering cities
