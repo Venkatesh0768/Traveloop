@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: backend-test
+
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-google-id
+            client-secret: test-google-secret
+
+  mail:
+    host: localhost
+    port: 2525
+    username: noreply@test.local
+    password: test-password
+
+jwt:
+  secret: test-secret-key-12345678901234567890
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+otp:
+  expiration: 300000
+  length: 6
+
+cors:
+  allowed-origins: http://localhost
+
+app:
+  frontend-url: http://localhost
+  base-url: http://localhost
+
+admin:
+  email: test@admin.com
+  password: test123
+  first-name: Test
+  last-name: Admin
+
+management:
+  health:
+    mail:
+      enabled: false
