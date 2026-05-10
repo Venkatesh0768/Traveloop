@@ -2,13 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Settings, Shield } from "lucide-react";
+import {
+  LayoutDashboard,
+  Map,
+  Settings,
+  Shield,
+  Compass,
+  NotebookPen,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { isAdmin } from "@/lib/utils/roles";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/profile",   label: "Settings",   icon: Settings },
+  { href: "/trips", label: "My Trips", icon: Map },
+  { href: "/cities", label: "Explore Cities", icon: Compass },
+  { href: "/profile", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {

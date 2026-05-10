@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { LogOut, Menu, Shield, ShieldCheck, User, X } from "lucide-react";
+import { LogOut, Map, Menu, Shield, User, X, Plane } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { displayName, initials, isAdmin } from "@/lib/utils/roles";
 
@@ -18,14 +18,20 @@ export function Navbar() {
 
   const handleLogout = async () => {
     setLoggingOut(true);
-    try { await logout(); router.push("/"); }
-    finally { setLoggingOut(false); setMobileOpen(false); }
+    try {
+      await logout();
+      router.push("/");
+    } finally {
+      setLoggingOut(false);
+      setMobileOpen(false);
+    }
   };
 
   const navLinks = user
     ? [
-        { href: "/dashboard", label: "Dashboard" },
-        { href: "/profile", label: "Profile" },
+        { href: "/dashboard", label: "Home" },
+        { href: "/trips", label: "My Trips" },
+        { href: "/cities", label: "Explore" },
         ...(admin ? [{ href: "/admin", label: "Admin" }] : []),
       ]
     : [];
@@ -36,11 +42,11 @@ export function Navbar() {
         <div className="flex h-14 items-center justify-between">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2 group">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white group-hover:bg-indigo-700 transition-colors">
-              <ShieldCheck size={14} />
+              <Plane size={14} />
             </div>
-            <span className="text-sm font-bold text-gray-900 tracking-tight">AuthKit</span>
+            <span className="text-sm font-bold text-gray-900 tracking-tight">Traveloop</span>
           </Link>
 
           {/* Desktop nav */}
@@ -77,6 +83,7 @@ export function Navbar() {
                     <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
                   </div>
                   <div className="p-1">
+                    <DropdownLink href="/trips" icon={<Map size={14} />}>My Trips</DropdownLink>
                     <DropdownLink href="/profile" icon={<User size={14} />}>Account settings</DropdownLink>
                     {admin && <DropdownLink href="/admin" icon={<Shield size={14} />}>Admin panel</DropdownLink>}
                   </div>

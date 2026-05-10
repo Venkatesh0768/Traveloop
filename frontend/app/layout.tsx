@@ -3,8 +3,8 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
-  title: "AuthKit — Production Auth Starter",
-  description: "JWT, refresh tokens, OTP email verification, Google OAuth2, RBAC, and admin panel.",
+  title: "Traveloop — Personalized Travel Planning",
+  description: "Plan multi-city trips, manage itineraries, track budgets, and share your adventures.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

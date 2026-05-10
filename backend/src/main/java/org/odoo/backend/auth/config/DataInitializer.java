@@ -58,6 +58,15 @@ public class DataInitializer implements CommandLineRunner {
     @Value("${admin.last-name:Admin}")
     private String adminLastName;
 
+    @Value("${ADMIN_CITY:Surat}")
+    private String adminCity;
+
+    @Value("${ADMIN_COUNTRY:India}")
+    private String adminCountry;
+
+    @Value("${ADMIN_PHONE:9876543210}")
+    private String adminPhone;
+
     @Override
     @Transactional
     public void run(String... args) {
@@ -107,7 +116,10 @@ public class DataInitializer implements CommandLineRunner {
                 .password(passwordEncoder.encode(adminPassword))
                 .firstName(adminFirstName)
                 .lastName(adminLastName)
-                .emailVerified(true)   // Admin is pre-verified
+                .city(adminCity)
+                .country(adminCountry)
+                .phoneNumber(adminPhone)
+                .emailVerified(true)
                 .enabled(true)
                 .provider("local")
                 .roles(Set.of(adminRole, userRole))

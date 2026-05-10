@@ -15,8 +15,18 @@ export default function RegisterPage() {
   const router = useRouter();
   const { status } = useAuth();
 
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirm: "" });
-  const [errors, setErrors]   = useState<Partial<typeof form>>({});
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    city: "",
+    country: "",
+    password: "",
+    confirm: "",
+  });
+
+  const [errors, setErrors] = useState<Partial<typeof form>>({});
   const [apiError, setApiError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,50 +36,192 @@ export default function RegisterPage() {
 
   const validate = () => {
     const e: Partial<typeof form> = {};
+
     if (!form.firstName.trim()) e.firstName = "Required";
-    if (!form.lastName.trim())  e.lastName  = "Required";
-    if (!form.email) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Enter a valid email";
-    if (!form.password) e.password = "Password is required";
-    else if (form.password.length < 8) e.password = "At least 8 characters";
-    if (!form.confirm) e.confirm = "Please confirm your password";
-    else if (form.confirm !== form.password) e.confirm = "Passwords do not match";
+
+    if (!form.lastName.trim()) e.lastName = "Required";
+
+    if (!form.email) {
+      e.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      e.email = "Enter a valid email";
+    }
+
+    if (!form.phoneNumber) {
+      e.phoneNumber = "Phone number is required";
+    } else if (!/^[0-9]{10}$/.test(form.phoneNumber)) {
+      e.phoneNumber = "Enter valid 10 digit phone number";
+    }
+
+    if (!form.city.trim()) {
+      e.city = "City is required";
+    }
+
+    if (!form.country.trim()) {
+      e.country = "Country is required";
+    }
+
+    if (!form.password) {
+      e.password = "Password is required";
+    } else if (form.password.length < 8) {
+      e.password = "At least 8 characters";
+    }
+
+    if (!form.confirm) {
+      e.confirm = "Please confirm your password";
+    } else if (form.confirm !== form.password) {
+      e.confirm = "Passwords do not match";
+    }
+
     setErrors(e);
+
     return !Object.keys(e).length;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!validate()) return;
-    setApiError(null); setLoading(true);
+
+    setApiError(null);
+    setLoading(true);
+
     try {
-      await authApi.signup({ firstName: form.firstName.trim(), lastName: form.lastName.trim(), email: form.email.trim().toLowerCase(), password: form.password });
-      router.push(`/verify-otp?email=${encodeURIComponent(form.email.trim().toLowerCase())}`);
+      await authApi.signup({
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim().toLowerCase(),
+        phoneNumber: form.phoneNumber.trim(),
+        city: form.city.trim(),
+        country: form.country.trim(),
+        password: form.password,
+      });
+
+      router.push(
+        `/verify-otp?email=${encodeURIComponent(
+          form.email.trim().toLowerCase()
+        )}`
+      );
     } catch (err) {
-      setApiError(isAxiosError(err) ? (err.response?.data?.message ?? "Registration failed.") : "Something went wrong.");
-    } finally { setLoading(false); }
+      setApiError(
+        isAxiosError(err)
+          ? err.response?.data?.message ?? "Registration failed."
+          : "Something went wrong."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const set = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, [field]: e.target.value }));
-    if (errors[field]) setErrors((er) => ({ ...er, [field]: undefined }));
-  };
+  const set =
+    (field: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setForm((f) => ({
+        ...f,
+        [field]: e.target.value,
+      }));
+
+      if (errors[field]) {
+        setErrors((er) => ({
+          ...er,
+          [field]: undefined,
+        }));
+      }
+    };
 
   return (
     <AuthCard>
-      <AuthHeader title="Create an account" subtitle="Get started — it only takes a minute" />
+      <AuthHeader
+        title="Create an account"
+        subtitle="Get started — it only takes a minute"
+      />
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <Alert variant="error" message={apiError} />
 
         <div className="grid grid-cols-2 gap-3">
-          <Input label="First name" placeholder="Jane" value={form.firstName} onChange={set("firstName")} error={errors.firstName} disabled={loading} autoFocus />
-          <Input label="Last name"  placeholder="Doe"  value={form.lastName}  onChange={set("lastName")}  error={errors.lastName}  disabled={loading} />
+          <Input
+            label="First name"
+            placeholder="Jane"
+            value={form.firstName}
+            onChange={set("firstName")}
+            error={errors.firstName}
+            disabled={loading}
+            autoFocus
+          />
+
+          <Input
+            label="Last name"
+            placeholder="Doe"
+            value={form.lastName}
+            onChange={set("lastName")}
+            error={errors.lastName}
+            disabled={loading}
+          />
         </div>
 
-        <Input label="Email address" type="email" placeholder="you@example.com" autoComplete="email" value={form.email} onChange={set("email")} error={errors.email} disabled={loading} />
-        <Input label="Password" type="password" placeholder="Min. 8 characters" autoComplete="new-password" value={form.password} onChange={set("password")} error={errors.password} disabled={loading} />
-        <Input label="Confirm password" type="password" placeholder="Repeat password" autoComplete="new-password" value={form.confirm} onChange={set("confirm")} error={errors.confirm} disabled={loading} />
+        <Input
+          label="Email address"
+          type="email"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={form.email}
+          onChange={set("email")}
+          error={errors.email}
+          disabled={loading}
+        />
+
+        <Input
+          label="Phone Number"
+          type="tel"
+          placeholder="9876543210"
+          value={form.phoneNumber}
+          onChange={set("phoneNumber")}
+          error={errors.phoneNumber}
+          disabled={loading}
+        />
+
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            label="City"
+            placeholder="Mumbai"
+            value={form.city}
+            onChange={set("city")}
+            error={errors.city}
+            disabled={loading}
+          />
+
+          <Input
+            label="Country"
+            placeholder="India"
+            value={form.country}
+            onChange={set("country")}
+            error={errors.country}
+            disabled={loading}
+          />
+        </div>
+
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Min. 8 characters"
+          autoComplete="new-password"
+          value={form.password}
+          onChange={set("password")}
+          error={errors.password}
+          disabled={loading}
+        />
+
+        <Input
+          label="Confirm password"
+          type="password"
+          placeholder="Repeat password"
+          autoComplete="new-password"
+          value={form.confirm}
+          onChange={set("confirm")}
+          error={errors.confirm}
+          disabled={loading}
+        />
 
         <Button type="submit" fullWidth size="lg" loading={loading}>
           {loading ? "Creating account…" : "Create account"}
@@ -78,7 +230,10 @@ export default function RegisterPage() {
 
       <p className="mt-6 text-center text-sm text-gray-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">
+        <Link
+          href="/login"
+          className="font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
+        >
           Sign in
         </Link>
       </p>

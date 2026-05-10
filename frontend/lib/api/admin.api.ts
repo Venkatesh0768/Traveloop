@@ -1,5 +1,6 @@
 import apiClient from "./client";
 import type { ApiResponse, AssignRolesRequest, User } from "@/types/auth.types";
+import type { AdminDashboard, PopularCity, UserActivity } from "@/types/trip.types";
 import type { AxiosResponse } from "axios";
 
 export interface PageResponse<T> {
@@ -36,6 +37,13 @@ export const adminApi = {
   deleteUser: (id: string): Promise<AxiosResponse<ApiResponse>> =>
     apiClient.delete(`/admin/users/${id}`),
 
-  getStats: (): Promise<AxiosResponse<ApiResponse>> =>
-    apiClient.get("/admin/stats"),
+  // Analytics
+  getDashboard: (): Promise<AxiosResponse<AdminDashboard>> =>
+    apiClient.get("/admin/dashboard"),
+
+  getPopularCities: (): Promise<AxiosResponse<PopularCity[]>> =>
+    apiClient.get("/admin/popular-cities"),
+
+  getActiveUsers: (): Promise<AxiosResponse<UserActivity[]>> =>
+    apiClient.get("/admin/active-users"),
 };

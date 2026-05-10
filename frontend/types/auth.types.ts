@@ -23,6 +23,9 @@ export interface SignupRequest {
   password: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
+  city:string;
+  country :string;
 }
 
 export interface LoginRequest {
