@@ -15,28 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-/**
- * Runs once at startup to seed required reference data.
- *
- * <h3>What it seeds</h3>
- * <ol>
- *   <li><b>Roles</b> — ensures ROLE_USER, ROLE_ADMIN, ROLE_VENDOR exist in the DB.</li>
- *   <li><b>Default Admin</b> — if no admin user exists, creates one from the
- *       {@code ADMIN_EMAIL} / {@code ADMIN_PASSWORD} environment variables.
- *       Safe to run on every startup — skipped if an admin already exists.</li>
- * </ol>
- *
- * <h3>Environment variables</h3>
- * <pre>
- * ADMIN_EMAIL=admin@yourdomain.com
- * ADMIN_PASSWORD=StrongPass@1234
- * ADMIN_FIRST_NAME=Super          # optional, default: "Super"
- * ADMIN_LAST_NAME=Admin           # optional, default: "Admin"
- * </pre>
- *
- * <p>If {@code ADMIN_EMAIL} is not set the admin seeding step is skipped
- * silently — useful for environments where you manage admins via SQL or API.</p>
- */
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -58,13 +37,13 @@ public class DataInitializer implements CommandLineRunner {
     @Value("${admin.last-name:Admin}")
     private String adminLastName;
 
-    @Value("${ADMIN_CITY:Surat}")
+    @Value("${admin.city:Surat}")
     private String adminCity;
 
-    @Value("${ADMIN_COUNTRY:India}")
+    @Value("${admin.country:India}")
     private String adminCountry;
 
-    @Value("${ADMIN_PHONE:9876543210}")
+    @Value("${admin.phone:9876543210}")
     private String adminPhone;
 
     @Override

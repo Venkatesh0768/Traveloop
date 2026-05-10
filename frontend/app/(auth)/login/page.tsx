@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isAxiosError } from "axios";
 import { useAuth } from "@/context/AuthContext";
+import { isAdmin } from "@/lib/utils/roles";
 import { AuthCard, AuthHeader } from "@/components/layout/AuthCard";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -14,7 +15,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") ?? "/dashboard";
-  const { login, status } = useAuth();
+  const { login, status, user } = useAuth();
 
   const [form, setForm]       = useState({ email: "", password: "" });
   const [errors, setErrors]   = useState<{ email?: string; password?: string }>({});
@@ -26,8 +27,11 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (status === "authenticated") router.replace(redirect);
-  }, [status, redirect, router]);
+    if (status === "authenticated") {
+      // Admins always go to the admin dashboard, regardless of the redirect param
+      router.replace(isAdmin(user) ? "/admin" : redirect);
+    }
+  }, [status, user, redirect, router]);
 
   const validate = () => {
     const e: typeof errors = {};
@@ -44,7 +48,8 @@ function LoginForm() {
     setApiError(null); setLoading(true);
     try {
       await login({ email: form.email.trim(), password: form.password });
-      router.push(redirect);
+      // Redirect is handled by the useEffect watching `status` and `user`
+      // so that admin users are correctly sent to /admin
     } catch (err) {
       if (isAxiosError(err)) {
         setApiError(err.response?.status === 403

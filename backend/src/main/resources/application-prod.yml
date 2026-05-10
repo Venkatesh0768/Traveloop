@@ -98,6 +98,9 @@ admin:
   password: ${ADMIN_PASSWORD:}
   first-name: ${ADMIN_FIRST_NAME:Super}
   last-name: ${ADMIN_LAST_NAME:Admin}
+  city: ${ADMIN_CITY:Surat}
+  country: ${ADMIN_COUNTRY:India}
+  phone: ${ADMIN_PHONE:9876543210}
 
 springdoc:
   api-docs:
